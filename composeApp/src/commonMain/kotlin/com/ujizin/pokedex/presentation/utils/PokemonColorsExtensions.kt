@@ -43,6 +43,7 @@ val PokemonType.color: Color
             contains("dark") -> Brown800
             contains("steel") -> Purple100
             contains("fairy") -> Pink200
+            contains("ground") -> Brown200
             else -> Color.LightGray
         }
     }
