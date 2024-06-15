@@ -39,6 +39,11 @@ kotlin {
             implementation(libs.compose.ui.tooling.preview)
             implementation(libs.androidx.activity.compose)
             implementation(libs.coil.okhttp)
+            implementation(libs.paging.android)
+            implementation(libs.compose.paging.android)
+        }
+        iosMain.dependencies {
+            implementation(libs.compose.paging.ios)
         }
         commonMain.dependencies {
             implementation(compose.runtime)
@@ -60,6 +65,7 @@ kotlin {
             implementation(libs.coil.core)
             implementation(libs.coil.ktor)
             implementation(libs.coil.compose)
+            implementation(libs.compose.paging.common)
         }
         desktopMain.dependencies {
             implementation(compose.desktop.currentOs)

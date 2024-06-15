@@ -14,7 +14,6 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
@@ -31,11 +30,14 @@ import androidx.compose.ui.draw.scale
 import androidx.compose.ui.layout.onPlaced
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
+import androidx.paging.PagingData
+import app.cash.paging.compose.collectAsLazyPagingItems
 import com.ujizin.pokedex.domain.Pokemon
 import com.ujizin.pokedex.presentation.themes.PokedexTheme
 import com.ujizin.pokedex.presentation.list.components.PokemonCardItem
 import com.ujizin.pokedex.presentation.utils.collectAsStateMultiplatform
 import com.ujizin.pokedex.presentation.utils.rememberCurrentOffset
+import kotlinx.coroutines.flow.Flow
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.viewmodel.koinViewModel
@@ -52,9 +54,7 @@ fun PokemonListScreen(
 ) {
     val uiState by viewModel.uiState.collectAsStateMultiplatform()
 
-    LaunchedEffect(Unit) {
-        if (uiState.pokemons.isEmpty()) viewModel.fetchPokemons()
-    }
+    LaunchedEffect(Unit) { viewModel.fetchPokemons() }
 
     PokemonListContent(
         modifier = modifier,
@@ -82,7 +82,7 @@ fun PokemonListContent(
         PokemonListContainer(
             modifier = Modifier.fillMaxSize(),
             scrollState = scrollState,
-            pokemons = uiState.pokemons,
+            pokemonPagerFlow = uiState.pagingFlow,
             onPokemonClick = onPokemonClick,
         )
 
@@ -113,10 +113,12 @@ fun PokeballBackground(
 @Composable
 private fun PokemonListContainer(
     scrollState: LazyListState,
-    pokemons: List<Pokemon>,
+    pokemonPagerFlow: Flow<PagingData<Pokemon>>,
     onPokemonClick: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val pokemonList = pokemonPagerFlow.collectAsLazyPagingItems()
+
     LazyColumn(
         state = scrollState,
         modifier = modifier,
@@ -130,10 +132,8 @@ private fun PokemonListContainer(
             )
         }
         item { Spacer(Modifier.height(64.dp)) }
-        items(
-            items = pokemons,
-//            key = { pokemon -> pokemon.id } // crashing...
-        ) { pokemon ->
+        items(pokemonList.itemCount) { index ->
+            val pokemon = pokemonList[index]!!
             PokemonCardItem(
                 modifier = Modifier
                     .width(IntrinsicSize.Max)
