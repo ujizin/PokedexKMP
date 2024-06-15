@@ -66,20 +66,7 @@ fun PokemonDetailContainer(
             title = "Special Stats",
             stats = pokemon.specialStats,
         )
-    }
-}
-
-@Composable
-fun PokemonStats(
-    stats: List<Pokemon.Stats>,
-    title: String,
-    modifier: Modifier = Modifier,
-) {
-    Column(modifier) {
-        PokemonStatContent(
-            title = "Base Stats",
-            stats = stats,
-        )
+        Spacer(Modifier.height(64.dp))
     }
 }
 

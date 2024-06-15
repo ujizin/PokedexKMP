@@ -54,8 +54,6 @@ fun PokemonListScreen(
 ) {
     val uiState by viewModel.uiState.collectAsStateMultiplatform()
 
-    LaunchedEffect(Unit) { viewModel.fetchPokemons() }
-
     PokemonListContent(
         modifier = modifier,
         uiState = uiState,
