@@ -8,17 +8,19 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -30,11 +32,12 @@ import androidx.compose.ui.draw.scale
 import androidx.compose.ui.layout.onPlaced
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
+import androidx.paging.LoadState
 import androidx.paging.PagingData
 import app.cash.paging.compose.collectAsLazyPagingItems
 import com.ujizin.pokedex.domain.Pokemon
-import com.ujizin.pokedex.presentation.themes.PokedexTheme
 import com.ujizin.pokedex.presentation.list.components.PokemonCardItem
+import com.ujizin.pokedex.presentation.themes.PokedexTheme
 import com.ujizin.pokedex.presentation.utils.collectAsStateMultiplatform
 import com.ujizin.pokedex.presentation.utils.rememberCurrentOffset
 import kotlinx.coroutines.flow.Flow
@@ -139,6 +142,18 @@ private fun PokemonListContainer(
                 pokemon = pokemon,
                 onPokemonClick = { onPokemonClick(it.name) }
             )
+        }
+        pokemonList.loadState.apply {
+            if (refresh is LoadState.Loading || append is LoadState.Loading) {
+                item {
+                    Box(
+                        modifier = Modifier.width(240.dp).height(120.dp),
+                        contentAlignment = Alignment.Center,
+                    ) {
+                        CircularProgressIndicator(modifier = Modifier.size(32.dp))
+                    }
+                }
+            }
         }
         item { Spacer(Modifier.height(96.dp)) }
     }
