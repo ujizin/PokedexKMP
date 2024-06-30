@@ -7,4 +7,5 @@ import com.ujizin.pokedex.domain.Pokemon
 data class PokemonDetailUiState(
     val pokemon: Pokemon? = null,
     val isLoading: Boolean = true,
+    val isError: Boolean = false,
 )

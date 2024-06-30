@@ -1,5 +1,6 @@
 package com.ujizin.pokedex.presentation.detail
 
+import androidx.collection.IntSet
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -27,10 +28,7 @@ class PokemonDetailViewModel(
             repository.getPokemon(name)
         }
         .map { pokemon -> PokemonDetailUiState(pokemon = pokemon, isLoading = false) }
-        .catch { exception ->
-            // TODO("Handle error, not implemented yet")
-            throw exception
-        }
+        .catch { emit(PokemonDetailUiState(isError = true)) }
         .stateIn(
             viewModelScope,
             SharingStarted.Eagerly,

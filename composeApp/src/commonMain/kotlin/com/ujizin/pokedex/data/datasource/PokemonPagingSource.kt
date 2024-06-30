@@ -17,13 +17,17 @@ class PokemonPagingSource(
     override suspend fun load(params: LoadParams<String>): LoadResult<String, PokemonDTO> {
         pagingKey = params.key ?: FIRST_PAGE_POKEMON_URL
 
-        val pokemons = pokemonService.fetchPokemons(pagingKey).first()
+        try {
+            val pokemons = pokemonService.fetchPokemons(pagingKey).first()
 
-        return LoadResult.Page(
-            data = pokemons.results,
-            prevKey = pagingKey.takeUnless { it == FIRST_PAGE_POKEMON_URL },
-            nextKey = pokemons.next
-        )
+            return LoadResult.Page(
+                data = pokemons.results,
+                prevKey = pagingKey.takeUnless { it == FIRST_PAGE_POKEMON_URL },
+                nextKey = pokemons.next
+            )
+        } catch (exception: Exception) {
+            return LoadResult.Error(exception)
+        }
     }
 
     companion object {

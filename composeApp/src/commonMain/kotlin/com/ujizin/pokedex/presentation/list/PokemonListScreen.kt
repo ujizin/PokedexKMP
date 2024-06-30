@@ -5,6 +5,7 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
@@ -12,11 +13,15 @@ import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.Button
+import androidx.compose.material.Card
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
@@ -144,18 +149,52 @@ private fun PokemonListContainer(
             )
         }
         pokemonList.loadState.apply {
-            if (refresh is LoadState.Loading || append is LoadState.Loading) {
-                item {
-                    Box(
-                        modifier = Modifier.width(240.dp).height(120.dp),
-                        contentAlignment = Alignment.Center,
-                    ) {
-                        CircularProgressIndicator(modifier = Modifier.size(32.dp))
-                    }
+            when {
+                refresh is LoadState.Loading || append is LoadState.Loading -> item {
+                    PokemonListLoader(Modifier.width(240.dp).height(120.dp))
+                }
+
+                refresh is LoadState.Error || append is LoadState.Error -> item {
+                    PokemonListError(
+                        onRetryClick = pokemonList::retry
+                    )
                 }
             }
         }
         item { Spacer(Modifier.height(96.dp)) }
+    }
+}
+
+@Composable
+fun PokemonListError(
+    modifier: Modifier = Modifier,
+    onRetryClick: () -> Unit,
+) {
+    Card(
+        modifier = modifier,
+        shape = RoundedCornerShape(16.dp, 0.dp, 0.dp, 16.dp)
+    ) {
+        Column(
+            modifier = Modifier.padding(16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text("Whoops! Something went wrong")
+            Button(onClick = onRetryClick) {
+                Text("Try again")
+            }
+        }
+    }
+}
+
+@Composable
+private fun PokemonListLoader(
+    modifier: Modifier = Modifier,
+) {
+    Box(
+        modifier = modifier,
+        contentAlignment = Alignment.Center,
+    ) {
+        CircularProgressIndicator(modifier = Modifier.size(32.dp))
     }
 }
 
