@@ -66,6 +66,8 @@ kotlin {
             implementation(libs.coil.ktor)
             implementation(libs.coil.compose)
             implementation(libs.compose.paging.common)
+            implementation(libs.room.runtime)
+            implementation(libs.room.paging)
         }
         desktopMain.dependencies {
             implementation(compose.desktop.currentOs)
@@ -126,6 +128,7 @@ compose.desktop {
 }
 
 dependencies {
+    ksp(libs.room.compiler)
     with(libs.ktorfit.ksp) {
         add("kspAndroid", this)
         add("kspAndroidTest", this)

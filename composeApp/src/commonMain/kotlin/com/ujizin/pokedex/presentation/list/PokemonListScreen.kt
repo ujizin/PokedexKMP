@@ -140,7 +140,7 @@ private fun PokemonListContainer(
         }
         item { Spacer(Modifier.height(64.dp)) }
         items(pokemonList.itemCount) { index ->
-            val pokemon = pokemonList[index]!!
+            val pokemon = pokemonList[index] ?: return@items
             PokemonCardItem(
                 modifier = Modifier
                     .width(IntrinsicSize.Max)
