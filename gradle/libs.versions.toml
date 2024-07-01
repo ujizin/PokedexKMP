@@ -25,6 +25,7 @@ ktorfit = "1.13.0"
 koin = "3.6.0-Beta4"
 koin-compose = "1.2.0-Beta4"
 coil = "3.0.0-alpha06"
+room = "2.7.0-alpha04"
 
 [libraries]
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
@@ -47,6 +48,9 @@ compose-paging-ios = { module = "app.cash.paging:paging-runtime-uikit", version.
 paging-android = { module = "androidx.paging:paging-runtime", version.ref = "paging-android" }
 compose-paging-android = { module = "androidx.paging:paging-compose", version.ref = "paging-android" }
 
+room-runtime = { module = "androidx.room:room-runtime", version.ref = "room" }
+room-paging = { module = "androidx.room:room-paging", version.ref = "room" }
+room-compiler = { module = "androidx.room:room-compiler", version.ref = "room" }
 
 coroutines-desktop = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-swing" }
 
