@@ -1,6 +1,7 @@
 package com.ujizin.pokedex.di
 
-import com.ujizin.pokedex.data.datasource.PokemonPagingSource
+import com.ujizin.pokedex.data.datasource.PokemonRemoteMediator
+import com.ujizin.pokedex.data.local.PokemonDatabase
 import com.ujizin.pokedex.data.mapper.PokemonMapper
 import com.ujizin.pokedex.data.repository.PokemonRepository
 import com.ujizin.pokedex.data.service.PokemonService
@@ -13,11 +14,18 @@ import org.koin.dsl.module
 
 object AppModule {
 
+    private val localModules = module {
+        single { get<PokemonDatabase>().pokemonDao() }
+    }
+
+    private val networkModules = module {
+        single { ServiceFactory.client.create<PokemonService>() }
+    }
+
     private val dataModules = module {
         singleOf(::PokemonMapper)
-        single { ServiceFactory.client.create<PokemonService>() }
-        single { PokemonPagingSource(get()) }
-        single { PokemonRepository(get(), get(), get()) }
+        single { PokemonRemoteMediator(get(), get(), get()) }
+        single { PokemonRepository(get(), get(), get(), get()) }
     }
 
     private val presentationModules = module {
@@ -25,5 +33,10 @@ object AppModule {
         viewModelOf(::PokemonDetailViewModel)
     }
 
-    val appModules = listOf(presentationModules, dataModules)
+    val appModules = listOf(
+        presentationModules,
+        dataModules,
+        localModules,
+        networkModules,
+    )
 }
