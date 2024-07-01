@@ -5,23 +5,17 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Button
-import androidx.compose.material.Card
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
@@ -41,6 +35,7 @@ import androidx.paging.LoadState
 import androidx.paging.PagingData
 import app.cash.paging.compose.collectAsLazyPagingItems
 import com.ujizin.pokedex.domain.Pokemon
+import com.ujizin.pokedex.presentation.components.PokemonErrorContainer
 import com.ujizin.pokedex.presentation.list.components.PokemonCardItem
 import com.ujizin.pokedex.presentation.themes.PokedexTheme
 import com.ujizin.pokedex.presentation.utils.collectAsStateMultiplatform
@@ -155,34 +150,14 @@ private fun PokemonListContainer(
                 }
 
                 refresh is LoadState.Error || append is LoadState.Error -> item {
-                    PokemonListError(
-                        onRetryClick = pokemonList::retry
+                    PokemonErrorContainer(
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        onRetryClick = pokemonList::retry,
                     )
                 }
             }
         }
         item { Spacer(Modifier.height(96.dp)) }
-    }
-}
-
-@Composable
-fun PokemonListError(
-    modifier: Modifier = Modifier,
-    onRetryClick: () -> Unit,
-) {
-    Card(
-        modifier = modifier,
-        shape = RoundedCornerShape(16.dp, 0.dp, 0.dp, 16.dp)
-    ) {
-        Column(
-            modifier = Modifier.padding(16.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Text("Whoops! Something went wrong")
-            Button(onClick = onRetryClick) {
-                Text("Try again")
-            }
-        }
     }
 }
 

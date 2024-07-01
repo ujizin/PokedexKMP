@@ -1,7 +1,9 @@
 package com.ujizin.pokedex.presentation.detail
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -13,11 +15,13 @@ import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import com.ujizin.pokedex.presentation.components.PokemonErrorContainer
 import com.ujizin.pokedex.presentation.themes.PokedexTheme
 import com.ujizin.pokedex.presentation.detail.components.PokemonDetailContainer
 import com.ujizin.pokedex.presentation.detail.components.PokemonDetailLoading
@@ -38,16 +42,22 @@ fun PokemonDetailScreen(
 ) {
     val uiState by viewModel.uiState.collectAsStateMultiplatform()
 
+    LaunchedEffect(viewModel) { viewModel.getPokemon() }
+
     PokemonDetailContent(
         modifier = modifier,
         uiState = uiState,
         onBackPress = onBackPress,
+        onRetryClick = viewModel::getPokemon,
     )
 }
 
 @Composable
 fun PokemonDetailContent(
-    uiState: PokemonDetailUiState, onBackPress: () -> Unit, modifier: Modifier = Modifier
+    uiState: PokemonDetailUiState,
+    modifier: Modifier = Modifier,
+    onBackPress: () -> Unit,
+    onRetryClick: () -> Unit,
 ) {
     Column(
         modifier = modifier,
@@ -59,6 +69,7 @@ fun PokemonDetailContent(
                 when {
                     uiState.pokemon != null -> Text(uiState.pokemon.capitalizedName)
                     uiState.isLoading -> LinearProgressIndicator(color = Color.White)
+                    uiState.isError -> Unit
                 }
             },
             navigationIcon = {
@@ -79,6 +90,13 @@ fun PokemonDetailContent(
                     .padding(horizontal = 24.dp),
                 pokemon = uiState.pokemon,
             )
+
+            uiState.isError -> PokemonErrorContainer(
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier.fillMaxSize(),
+                onRetryClick = onRetryClick
+            )
         }
     }
 }
@@ -87,6 +105,10 @@ fun PokemonDetailContent(
 @Preview
 fun PokemonDetailContentPreview() {
     PokedexTheme {
-        PokemonDetailContent(uiState = PokemonDetailUiState(), onBackPress = {})
+        PokemonDetailContent(
+            uiState = PokemonDetailUiState(),
+            onBackPress = {},
+            onRetryClick = {},
+        )
     }
 }
