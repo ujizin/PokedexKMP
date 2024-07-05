@@ -18,6 +18,7 @@ data class PokemonEntity(
     @field:TypeConverters(PokemonTypeConverter::class)
     val stats: List<Stats> = emptyList(),
     @field:TypeConverters(PokemonTypeConverter::class)
+    @ColumnInfo("special_stats")
     val specialStats: List<Stats> = emptyList(),
 ) {
 
