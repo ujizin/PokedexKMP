@@ -1,5 +1,6 @@
 package com.ujizin.pokedex.presentation.list
 
+import androidx.compose.animation.AnimatedContentScope
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
@@ -37,7 +38,7 @@ import app.cash.paging.compose.collectAsLazyPagingItems
 import com.ujizin.pokedex.domain.Pokemon
 import com.ujizin.pokedex.presentation.components.PokemonErrorContainer
 import com.ujizin.pokedex.presentation.list.components.PokemonCardItem
-import com.ujizin.pokedex.presentation.themes.PokedexTheme
+import com.ujizin.pokedex.presentation.themes.PokedexPreviewTheme
 import com.ujizin.pokedex.presentation.utils.collectAsStateMultiplatform
 import com.ujizin.pokedex.presentation.utils.rememberCurrentOffset
 import kotlinx.coroutines.flow.Flow
@@ -52,14 +53,16 @@ import pokedexkmp.composeapp.generated.resources.pokeball
 @Composable
 fun PokemonListScreen(
     modifier: Modifier = Modifier,
+    animatedContentScope: AnimatedContentScope,
     viewModel: PokemonListViewModel = koinViewModel(),
-    onPokemonClick: (String) -> Unit,
+    onPokemonClick: (Pokemon) -> Unit,
 ) {
     val uiState by viewModel.uiState.collectAsStateMultiplatform()
 
     PokemonListContent(
         modifier = modifier,
         uiState = uiState,
+        animatedContentScope = animatedContentScope,
         onPokemonClick = onPokemonClick,
     )
 }
@@ -68,7 +71,8 @@ fun PokemonListScreen(
 fun PokemonListContent(
     modifier: Modifier = Modifier,
     uiState: PokemonListUiState,
-    onPokemonClick: (String) -> Unit,
+    animatedContentScope: AnimatedContentScope,
+    onPokemonClick: (Pokemon) -> Unit,
 ) {
     Box(modifier) {
         val scrollState = rememberLazyListState()
@@ -83,6 +87,7 @@ fun PokemonListContent(
         PokemonListContainer(
             modifier = Modifier.fillMaxSize(),
             scrollState = scrollState,
+            animatedContentScope = animatedContentScope,
             pokemonPagerFlow = uiState.pagingFlow,
             onPokemonClick = onPokemonClick,
         )
@@ -114,8 +119,9 @@ fun PokeballBackground(
 @Composable
 private fun PokemonListContainer(
     scrollState: LazyListState,
+    animatedContentScope: AnimatedContentScope,
     pokemonPagerFlow: Flow<PagingData<Pokemon>>,
-    onPokemonClick: (String) -> Unit,
+    onPokemonClick: (Pokemon) -> Unit,
     modifier: Modifier = Modifier
 ) {
     val pokemonList = pokemonPagerFlow.collectAsLazyPagingItems()
@@ -139,8 +145,9 @@ private fun PokemonListContainer(
                 modifier = Modifier
                     .width(IntrinsicSize.Max)
                     .animateItemPlacement(),
+                animatedContentScope = animatedContentScope,
                 pokemon = pokemon,
-                onPokemonClick = { onPokemonClick(it.name) }
+                onPokemonClick = onPokemonClick
             )
         }
         pokemonList.loadState.apply {
@@ -176,9 +183,10 @@ private fun PokemonListLoader(
 @Composable
 @Preview
 private fun PokemonListContentPreview() {
-    PokedexTheme {
+    PokedexPreviewTheme {
         PokemonListContent(
             uiState = PokemonListUiState(),
+            animatedContentScope = this,
             onPokemonClick = {}
         )
     }

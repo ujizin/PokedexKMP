@@ -1,5 +1,7 @@
 package com.ujizin.pokedex.presentation.detail.components
 
+import androidx.compose.animation.AnimatedContentScope
+import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -29,13 +31,16 @@ import coil3.compose.AsyncImage
 import coil3.compose.LocalPlatformContext
 import com.ujizin.pokedex.domain.Pokemon
 import com.ujizin.pokedex.domain.PokemonType
+import com.ujizin.pokedex.presentation.navigation.LocalSharedTransitionScope
 import com.ujizin.pokedex.presentation.utils.color
 import com.ujizin.pokedex.presentation.utils.toColor
 
 @Composable
 fun PokemonDetailContainer(
-    modifier: Modifier = Modifier,
     pokemon: Pokemon,
+    isLoading: Boolean,
+    animatedContentScope: AnimatedContentScope,
+    modifier: Modifier = Modifier,
 ) {
     Column(
         modifier = modifier,
@@ -44,8 +49,15 @@ fun PokemonDetailContainer(
         PokemonHeader(
             id = pokemon.id,
             name = pokemon.capitalizedName,
+            animatedContentScope = animatedContentScope,
             imageUrl = pokemon.imageUrl,
         )
+
+        if (isLoading) {
+            PokemonDetailLoading(Modifier.padding(top = 24.dp))
+            return
+        }
+
         PokemonTypes(
             modifier = Modifier.padding(top = 16.dp),
             types = pokemon.types,
@@ -143,28 +155,42 @@ fun PokemonTypes(
     }
 }
 
+@OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
 private fun PokemonHeader(
     id: Int,
     name: String,
     imageUrl: String,
+    animatedContentScope: AnimatedContentScope,
     modifier: Modifier = Modifier,
 ) {
     Column(
         modifier = modifier,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        PokemonImage(imageUrl)
+        val localSharedTransitionScope = LocalSharedTransitionScope.current
+        with(localSharedTransitionScope) {
+            PokemonImage(
+                modifier = Modifier.size(180.dp).sharedElement(
+                    state = rememberSharedContentState(key = name),
+                    animatedVisibilityScope = animatedContentScope,
+                ),
+                imageUrl = imageUrl
+            )
+        }
         Spacer(Modifier.height(8.dp))
         PokemonHeaderTitle(name = name, id = id)
     }
 }
 
 @Composable
-private fun PokemonImage(imageUrl: String) {
+private fun PokemonImage(
+    imageUrl: String,
+    modifier: Modifier = Modifier,
+) {
     val context = LocalPlatformContext.current
     AsyncImage(
-        modifier = Modifier.size(180.dp),
+        modifier = modifier,
         model = imageUrl,
         contentDescription = null,
         imageLoader = ImageLoader.Builder(context).build()

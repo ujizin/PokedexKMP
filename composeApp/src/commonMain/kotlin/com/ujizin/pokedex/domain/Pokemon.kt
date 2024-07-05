@@ -2,7 +2,9 @@ package com.ujizin.pokedex.domain
 
 import androidx.compose.ui.text.capitalize
 import androidx.compose.ui.text.intl.LocaleList
+import kotlinx.serialization.Serializable
 
+@Serializable
 data class Pokemon(
     val id: Int,
     val name: String,
@@ -15,6 +17,7 @@ data class Pokemon(
     val capitalizedName: String
         get() = name.capitalize(LocaleList.current)
 
+    @Serializable
     data class Stats(
         val name: String,
         val base: Int,
