@@ -1,5 +1,8 @@
 package com.ujizin.pokedex.presentation.themes
 
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.AnimatedContentScope
+import androidx.compose.animation.core.MutableTransitionState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.material.MaterialTheme
@@ -22,4 +25,13 @@ fun PokedexTheme(content: @Composable () -> Unit) {
             )
         }
     )
+}
+
+@Composable
+fun PokedexPreviewTheme(content: @Composable AnimatedContentScope.() -> Unit) {
+    AnimatedContent(MutableTransitionState(true)) {
+        PokedexTheme {
+            content()
+        }
+    }
 }

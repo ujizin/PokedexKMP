@@ -1,10 +1,18 @@
 package com.ujizin.pokedex.presentation.navigation
 
-sealed class Destination(val route: String) {
-    data object PokemonList : Destination("/")
-    data class PokemonDetail(val name: String = "{$NAME_ARG}") : Destination("/$name") {
+import com.ujizin.pokedex.domain.Pokemon
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
+
+object Destination {
+    @Serializable
+    data object PokemonList
+
+    @Serializable
+    data class PokemonDetail(val pokemon: String) {
         companion object {
-            const val NAME_ARG = "id"
+            fun setDestination(pokemon: Pokemon) = PokemonDetail(Json.encodeToString(pokemon))
         }
     }
 }
