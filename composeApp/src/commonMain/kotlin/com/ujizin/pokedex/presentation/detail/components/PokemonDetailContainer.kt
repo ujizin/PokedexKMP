@@ -1,7 +1,13 @@
 package com.ujizin.pokedex.presentation.detail.components
 
 import androidx.compose.animation.AnimatedContentScope
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalSharedTransitionApi
+import androidx.compose.animation.animateContentSize
+import androidx.compose.animation.core.MutableTransitionState
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideInVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -17,6 +23,10 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Divider
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -34,6 +44,7 @@ import com.ujizin.pokedex.domain.PokemonType
 import com.ujizin.pokedex.presentation.navigation.LocalSharedTransitionScope
 import com.ujizin.pokedex.presentation.utils.color
 import com.ujizin.pokedex.presentation.utils.toColor
+import kotlinx.coroutines.delay
 
 @Composable
 fun PokemonDetailContainer(
@@ -43,7 +54,7 @@ fun PokemonDetailContainer(
     modifier: Modifier = Modifier,
 ) {
     Column(
-        modifier = modifier,
+        modifier = modifier.animateContentSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         PokemonHeader(
@@ -66,6 +77,7 @@ fun PokemonDetailContainer(
             modifier = Modifier.padding(vertical = 24.dp),
             color = Color.LightGray,
         )
+
         PokemonStatContent(
             title = "Base Stats",
             stats = pokemon.stats,
@@ -89,17 +101,34 @@ private fun PokemonStatContent(
     stats: List<Pokemon.Stats>,
 ) {
     Column(modifier) {
-        Text(
-            text = title,
-            fontWeight = FontWeight.Bold,
-            fontSize = 32.sp,
-        )
-        Spacer(Modifier.height(24.dp))
-        Column(
-            verticalArrangement = Arrangement.spacedBy(8.dp)
+        val state = remember { MutableTransitionState(false) }.apply { targetState = true }
+        AnimatedVisibility(
+            visibleState = state,
+            enter = fadeIn() + slideInHorizontally(),
         ) {
-            stats.forEach { stat ->
-                PokemonStat(stat)
+            Text(
+                text = title,
+                fontWeight = FontWeight.Bold,
+                fontSize = 32.sp,
+            )
+        }
+        Spacer(Modifier.height(24.dp))
+        Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+            val delay by remember { mutableStateOf(50L) }
+            stats.forEachIndexed { index, stat ->
+                val statState = remember { MutableTransitionState(false) }
+
+                LaunchedEffect(Unit) {
+                    delay(delay * index)
+                    statState.targetState = true
+                }
+
+                AnimatedVisibility(
+                    visibleState = statState,
+                    enter = fadeIn() + slideInHorizontally()
+                ) {
+                    PokemonStat(stat)
+                }
             }
         }
     }
@@ -137,20 +166,29 @@ fun PokemonTypes(
     types: List<PokemonType>,
     modifier: Modifier = Modifier,
 ) {
-    Row(
-        modifier = modifier,
-        horizontalArrangement = Arrangement.spacedBy(12.dp, Alignment.CenterHorizontally)
+    val state = remember { MutableTransitionState(false) }.apply {
+        targetState = true
+    }
+    AnimatedVisibility(
+        visibleState = state,
+        enter = fadeIn() + slideInVertically { it },
     ) {
-        types.forEach { type ->
-            Text(
-                modifier = Modifier
-                    .background(type.color, RoundedCornerShape(16.dp))
-                    .padding(vertical = 4.dp, horizontal = 12.dp),
-                color = Color.White,
-                fontWeight = FontWeight.Bold,
-                fontSize = 18.sp,
-                text = type.name.capitalize(LocaleList.current),
-            )
+        Row(
+            modifier = modifier,
+            horizontalArrangement = Arrangement.spacedBy(12.dp, Alignment.CenterHorizontally)
+        ) {
+
+            types.forEach { type ->
+                Text(
+                    modifier = Modifier
+                        .background(type.color, RoundedCornerShape(16.dp))
+                        .padding(vertical = 4.dp, horizontal = 12.dp),
+                    color = Color.White,
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 18.sp,
+                    text = type.name.capitalize(LocaleList.current),
+                )
+            }
         }
     }
 }
