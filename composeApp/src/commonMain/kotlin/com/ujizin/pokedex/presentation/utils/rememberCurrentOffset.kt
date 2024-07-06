@@ -14,8 +14,8 @@ import androidx.compose.runtime.remember
 
 @Composable
 fun rememberCurrentOffset(state: LazyListState): State<Int> {
-    val position = remember { derivedStateOf { state.firstVisibleItemIndex } }
-    val itemOffset = remember { derivedStateOf { state.firstVisibleItemScrollOffset } }
+    val position = remember(state) { derivedStateOf { state.firstVisibleItemIndex } }
+    val itemOffset = remember(state) { derivedStateOf { state.firstVisibleItemScrollOffset } }
     val lastPosition = rememberPrevious(position.value)
     val lastItemOffset = rememberPrevious(itemOffset.value)
     val currentOffset = remember { mutableStateOf(0) }
