@@ -8,8 +8,7 @@
 Pokedex KMP is a Kotlin Multiplatform project targeting Android and iOS platforms, built with modern libraries such as Jetpack Compose, Flow, Paging, Room, and more.
 </p>
 
-<div style="display:flex; justify-content: space-around; flex-wrap: wrap-reverse">
-  <div style="flex: 1; flex-basis: 350px">
+<img src="assets/pokedex_android.gif" width="280" height="620" align="right"/>
 
 ## 📚 Libraries
 
@@ -23,11 +22,6 @@ Pokedex KMP is a Kotlin Multiplatform project targeting Android and iOS platform
 ## 🏗️ Architecture
 
 The project is structured around the Model-View-ViewModel (MVVM) architecture and employs the repository pattern recommended by Google. For further details, see the [official documentation on Android architecture](https://developer.android.com/topic/architecture).
-  </div>
-  <div style="flex: 1; display: flex; justify-content: center; flex-basis: 350px">
-    <img src="assets/pokedex_android.gif" width="280" height="620"/>
-  </div>
-</div>
 
 ## 📋 License
 
