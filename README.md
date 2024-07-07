@@ -10,7 +10,7 @@ Pokedex KMP is a Kotlin Multiplatform project targeting Android and iOS platform
 
 <img src="assets/pokedex_android.gif" width="280" height="620" align="right"/>
 
-## 📚 Libraries
+<h2>📚 Libraries</h2>
 
 - **Jetpack Compose**: A modern toolkit for building native UIs with a declarative approach, simplifying UI development.
 - **Flow**: A Kotlin library for handling asynchronous data streams, offering reactive programming capabilities.
@@ -19,9 +19,11 @@ Pokedex KMP is a Kotlin Multiplatform project targeting Android and iOS platform
 - **Ktor/Ktorfit**: A framework for building asynchronous servers and clients in connected systems using Kotlin.
 - **Koin**: A pragmatic lightweight dependency injection framework for Kotlin, making it easier to manage dependencies.
 
-## 🏗️ Architecture
+<h2>🏗️ Architecture</h2>
 
 The project is structured around the Model-View-ViewModel (MVVM) architecture and employs the repository pattern recommended by Google. For further details, see the [official documentation on Android architecture](https://developer.android.com/topic/architecture).
+
+<br clear="both"/>
 
 ## 📋 License
 
